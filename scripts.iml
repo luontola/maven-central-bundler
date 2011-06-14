@@ -22,6 +22,12 @@
     </requirement>
     <requirement>
       <requirement>
+        <dependency name="highline" version="1.6.2" bound="GREATER_OR_EQUAL" git="false" />
+      </requirement>
+      <source from="lib/bundler.rb" />
+    </requirement>
+    <requirement>
+      <requirement>
         <dependency name="imagesize" version="0" bound="GREATER_OR_EQUAL" git="false" />
       </requirement>
       <source manual="true" />
@@ -83,6 +89,7 @@
     <orderEntry type="library" scope="PROVIDED" name="[gem] rspec-core (v2.6.4, C:/jruby-1.6.2/lib/ruby/gems/1.8/gems/rspec-core-2.6.4)" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="[gem] rspec-expectations (v2.6.0, C:/jruby-1.6.2/lib/ruby/gems/1.8/gems/rspec-expectations-2.6.0)" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="[gem] rspec-mocks (v2.6.0, C:/jruby-1.6.2/lib/ruby/gems/1.8/gems/rspec-mocks-2.6.0)" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="[gem] highline (v1.6.2, C:/jruby-1.6.2/lib/ruby/gems/1.8/gems/highline-1.6.2)" level="application" />
   </component>
   <component name="RModuleSettingsStorage" number="1" string0="$MODULE_DIR$/lib" />
 </module>
