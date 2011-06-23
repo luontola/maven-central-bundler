@@ -11,6 +11,8 @@ as instructed in here:
 
 For usage instructions, run make_bundle.rb without parameters.
 
+Requires the following command line applications: jar, unzip, gpg
+
 To run the tests, it's helpful to store your GPG password in a file 
 and pipe it to the tests, to avoid having to retype it. Like this:
 
