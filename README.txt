@@ -7,7 +7,7 @@ generates from them a bundle which can be uploaded to Maven Central,
 as instructed in here:
 
   https://docs.sonatype.org/display/Repository/Sonatype+OSS+Maven+Repository+Usage+Guide
-  https://docs.sonatype.org/display/Repository/Uploading+3rd-party+Artifacts+to+Maven+Central
+  https://docs.sonatype.org/display/Repository/Uploading+3rd-party+Artifacts+to+The+Central+Repository
 
 For usage instructions, run make_bundle.rb without parameters.
 
