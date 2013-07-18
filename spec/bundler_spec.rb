@@ -9,6 +9,7 @@ describe Bundler, "given no javadocs," do
     FileUtils.rm_rf @sandbox
 
     bundler = Bundler.new
+    bundler.password = ENV['GPG_PASSWORD'] if ENV['GPG_PASSWORD']
     bundler.set_options :pom => @testdata+'/annotations-pom.xml',
                         :jar => @testdata+'/annotations.jar',
                         :sources => @testdata+'/src_annotations.zip',

@@ -6,6 +6,8 @@ require 'fileutils'
 
 class Bundler
 
+  attr_writer :password
+
   def set_options(options)
     @pom_file = options[:pom]
     @jar_file = options[:jar]
