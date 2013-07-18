@@ -17,7 +17,8 @@ class Bundler
 
     @artifact_id = doc.elements['project/artifactId'].text
     @version = doc.elements['project/version'].text
-    @packaging = doc.elements['project/packaging'].text
+    packaging_element = doc.elements['project/packaging']
+    @packaging = packaging_element ? packaging_element.text : 'jar'
     @packaging == 'jar' or raise "Unsupported packaging: #{@packaging}"
     @final_name = "#{@artifact_id}-#{@version}"
   end
