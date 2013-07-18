@@ -47,7 +47,7 @@ class Bundler
     sign result_javadoc
 
     Dir.chdir(target_dir) do
-      system('jar', 'cvf', "#{@final_name}-bundle.jar", *Dir.glob("*"))
+      exec('jar', 'cvf', "#{@final_name}-bundle.jar", *Dir.glob("*"))
     end
   end
 
@@ -57,10 +57,10 @@ class Bundler
     FileUtils.mkdir_p "#{temp}/src/main/java"
 
     FileUtils.cp @pom_file, "#{temp}/pom.xml"
-    system('unzip', @sources_file, '-d', "#{temp}/src/main/java")
+    exec('unzip', @sources_file, '-d', "#{temp}/src/main/java")
 
     Dir.chdir(temp) do
-      system("mvn", "javadoc:jar")
+      exec("mvn", "javadoc:jar")
     end
     FileUtils.cp Dir.glob("#{temp}/target/*-javadoc.jar"), target_dir
 
@@ -72,10 +72,14 @@ class Bundler
     command = ['gpg', '--passphrase', @password, '--armor', '--detach-sign']
     command.push '--output', output_file if output_file
     command.push file
-    system(*command)
+    exec(*command)
   end
 
   def get_password(prompt="Enter Password")
     ask(prompt) { |q| q.echo = false }
+  end
+
+  def exec(*command)
+    system(*command) or raise "Command failed: #{command}"
   end
 end
