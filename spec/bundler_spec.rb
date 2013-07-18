@@ -10,15 +10,14 @@ describe Bundler, "given no javadocs," do
 
     bundler = Bundler.new
     bundler.password = ENV['GPG_PASSWORD'] if ENV['GPG_PASSWORD']
-    bundler.set_options :pom => @testdata+'/annotations-pom.xml',
-                        :jar => @testdata+'/annotations.jar',
-                        :sources => @testdata+'/src_annotations.zip',
-                        :javadoc => false
+    bundler.add_artifact(:pom, @testdata+'/annotations-pom.xml')
+    bundler.add_artifact(:jar, @testdata+'/annotations.jar')
+    bundler.add_artifact(:sources, @testdata+'/src_annotations.zip')
     bundler.create(@sandbox)
   end
 
   it "renames POM" do
-    File.file?(@sandbox+"/pom.xml").should == true
+    File.file?(@sandbox+"/annotations-9.0.4.pom").should == true
   end
 
   it "renames JAR" do

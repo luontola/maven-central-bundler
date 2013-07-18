@@ -12,6 +12,11 @@
     <description>Annotations used by IntelliJ IDEA for static code analysis</description>
     <url>http://www.jetbrains.com/idea/</url>
 
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    </properties>
+
     <licenses>
         <license>
             <name>Apache License, Version 2.0</name>

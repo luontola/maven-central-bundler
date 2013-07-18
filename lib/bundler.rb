@@ -8,47 +8,53 @@ class Bundler
 
   attr_writer :password
 
-  def set_options(options)
-    @pom_file = options[:pom]
-    @jar_file = options[:jar]
-    @sources_file = options[:sources]
-    @javadoc_file = options[:javadoc]
+  def initialize
+    @artifacts = {}
+  end
 
-    xml = File.read(options[:pom])
-    doc = REXML::Document.new(xml)
-
-    @artifact_id = doc.elements['project/artifactId'].text
-    @version = doc.elements['project/version'].text
-    packaging_element = doc.elements['project/packaging']
-    @packaging = packaging_element ? packaging_element.text : 'jar'
-    @packaging == 'jar' or raise "Unsupported packaging: #{@packaging}"
-    @final_name = "#{@artifact_id}-#{@version}"
+  def add_artifact(classifier, path)
+    @artifacts[classifier] = path
   end
 
   def create(target_dir)
+    check_artifact_exists(:pom)
+    check_artifact_exists(:jar)
+    check_artifact_exists(:sources)
+
+    xml = File.read(@artifacts[:pom])
+    doc = REXML::Document.new(xml)
+
+    artifact_id = doc.elements['project/artifactId'].text
+    version = doc.elements['project/version'].text
+    packaging_element = doc.elements['project/packaging']
+    packaging = packaging_element ? packaging_element.text : 'jar'
+    packaging == 'jar' or raise "Unsupported packaging: #{packaging}"
+    base_name = "#{artifact_id}-#{version}"
+
     Dir.mkdir target_dir
-    result_pom = target_dir+"/pom.xml"
-    result_jar = target_dir+"/#{@final_name}.jar"
-    result_sources = target_dir+"/#{@final_name}-sources.jar"
-    result_javadoc = target_dir+"/#{@final_name}-javadoc.jar"
 
-    FileUtils.cp @pom_file, result_pom
-    FileUtils.cp @jar_file, result_jar
-    FileUtils.cp @sources_file, result_sources
-    if @javadoc_file
-      FileUtils.cp @javadoc_file, result_javadoc
-    else
+    @artifacts.each_pair { |classifier, path|
+      # TODO: support for artifacts of non-jar type
+      filename = "#{base_name}-#{classifier}.jar" # default
+      filename = "#{base_name}.pom" if classifier == :pom
+      filename = "#{base_name}.jar" if classifier == :jar
+      result_path = "#{target_dir}/#{filename}"
+      FileUtils.cp path, result_path
+      sign result_path
+    }
+
+    unless @artifacts[:javadoc]
       generate_javadoc target_dir
+      sign "#{target_dir}/#{base_name}-javadoc.jar"
     end
-
-    sign result_pom, target_dir+"/#{@final_name}.pom.asc"
-    sign result_jar
-    sign result_sources
-    sign result_javadoc
 
     Dir.chdir(target_dir) do
-      exec('jar', 'cvf', "#{@final_name}-bundle.jar", *Dir.glob("*"))
+      exec('jar', 'cvf', "#{base_name}-bundle.jar", *Dir.glob("*"))
     end
+  end
+
+  def check_artifact_exists(classifier)
+    raise "Missing required artifact '#{classifier}': #{@artifacts}" unless @artifacts[classifier]
   end
 
   def generate_javadoc(target_dir)
@@ -56,8 +62,8 @@ class Bundler
     FileUtils.rm_rf temp
     FileUtils.mkdir_p "#{temp}/src/main/java"
 
-    FileUtils.cp @pom_file, "#{temp}/pom.xml"
-    exec('unzip', @sources_file, '-d', "#{temp}/src/main/java")
+    FileUtils.cp @artifacts[:pom], "#{temp}/pom.xml"
+    exec('unzip', @artifacts[:sources], '-d', "#{temp}/src/main/java")
 
     Dir.chdir(temp) do
       exec("mvn", "javadoc:jar")
